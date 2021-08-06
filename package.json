@@ -1,0 +1,29 @@
+{
+  "name": "invitelogger-yggdrasil",
+  "version": "1.0.0",
+  "description": "Invitelogger main api",
+  "main": "./bin/yggdrasil.js",
+  "scripts": {
+    "build": "tsc --build",
+    "start": "tsc --build && node ."
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/chaun14/invitelogger-yggdrasil.git"
+  },
+  "keywords": [
+    "invitelogger",
+    "discord",
+    "bot",
+    "ws"
+  ],
+  "author": "chaun14",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/chaun14/invitelogger-yggdrasil/issues"
+  },
+  "homepage": "https://github.com/chaun14/invitelogger-yggdrasil#readme",
+  "devDependencies": {
+    "typescript": "^4.3.5"
+  }
+}
