@@ -1,3 +1,4 @@
 {
-    "port": 2000
+    "port": 2000,
+    "key": "createasecureapikeyhere"
 }
