@@ -1,13 +1,20 @@
 import { Server } from "ws";
-import config from "../config.json";
+import yggConfig from "../config.json";
+import { Authenticator } from "./modules/auth";
 export class YggdrasilClient extends Server {
-  public constructor(port: number) {
-    super({ port: port });
+  public authenticator!: Authenticator;
+  public config = yggConfig;
+
+  public constructor(port: number, wsAuthenticator: Authenticator) {
+    super({ port: port, verifyClient: wsAuthenticator.verifyAuth.bind(wsAuthenticator) });
+
+    this.authenticator = wsAuthenticator;
   }
 }
 
-let client = new YggdrasilClient(config.port);
+const auth = new Authenticator(yggConfig.key);
+const client = new YggdrasilClient(yggConfig.port, auth);
 
-client.on("listening", (data: any) => {
+client.on("listening", () => {
   console.log("socket ready on port " + client.options.port);
 });
