@@ -4,7 +4,7 @@ import { InvlogController } from "./components/invlogController";
 import { InvlogShard } from "./components/invlogShard";
 import { Authenticator } from "./modules/auth";
 import { socketManager } from "./modules/socketManager";
-export class YggdrasilClient extends Server {
+export class YggdrasilServer extends Server {
   public authenticator!: Authenticator;
   public config = yggConfig;
   public invlogShards: Map<number, InvlogShard>;
@@ -20,13 +20,13 @@ export class YggdrasilClient extends Server {
 }
 
 const auth = new Authenticator(yggConfig.key);
-const client = new YggdrasilClient(yggConfig.port, auth);
+const server = new YggdrasilServer(yggConfig.port, auth);
 
-client.on("listening", () => {
-  console.log("socket ready on port " + client.options.port);
+server.on("listening", () => {
+  console.log("socket ready on port " + server.options.port);
 });
 
-client.on("connection", (socket) => {
+server.on("connection", (socket) => {
   console.log("socket connected");
-  new socketManager(socket, client);
+  new socketManager(socket, server);
 });

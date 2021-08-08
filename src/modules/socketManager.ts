@@ -2,7 +2,7 @@ import WebSocket from "ws";
 import { InvlogController } from "../components/invlogController";
 import { InvlogShard } from "../components/invlogShard";
 import { controllerInfoData } from "../types";
-import { YggdrasilClient } from "../yggdrasil";
+import { YggdrasilServer } from "../yggdrasil";
 
 interface welcomeMessage {
   type: string;
@@ -13,8 +13,8 @@ interface welcomeMessage {
 }
 
 export class socketManager {
-  server: YggdrasilClient;
-  public constructor(socket: WebSocket, server: YggdrasilClient) {
+  server: YggdrasilServer;
+  public constructor(socket: WebSocket, server: YggdrasilServer) {
     this.server = server;
     this.registerSocket(socket);
   }
