@@ -23,10 +23,10 @@ export class socketManager {
     socket.on("welcome", (data: welcomeMessage) => {
       console.log(data);
       if (data.type == "shard" && data.id) {
-        let thisShard = new InvlogShard(data.id, socket);
+        let thisShard = new InvlogShard(this.server, data.id, socket);
         this.server.invlogShards.set(data.id, thisShard);
       } else if (data.type == "invlogController" && data.id && data.infos) {
-        let thisController = new InvlogController(data.id, socket, data.infos);
+        let thisController = new InvlogController(this.server, data.id, socket, data.infos);
         this.server.invlogControllers.set(data.id, thisController);
       }
     });
