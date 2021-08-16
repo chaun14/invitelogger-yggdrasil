@@ -7,13 +7,13 @@ const socket = require("socket.io-client")("http://localhost:2000");
 
 socket.on("connect", () => {
   console.log("connected to smth");
-  socket.emit("authenticate", { token });
+  socket.emit("authenticate", { token: token + "" });
 });
 
 socket.on("welcome", () => {
   console.log("we are authenticated");
 
-  socket.send("welcome", { id: 1, type: "invlogController" });
+  socket.emit("welcome", { id: 1, type: "invlogController" });
 });
 
 socket.on("error", (err) => {

@@ -26,8 +26,8 @@ export class socketManager {
 
   public async registerSocket(socket: Socket) {
     // firstly we need to authenticate it
-    let auth = await this.authenticator.verifyAuth(socket);
-    if (auth) return;
+    let auth = await this.authenticator.verifyAuth(socket).catch(() => {});
+    if (!auth) return;
     console.log("enable socket register");
 
     socket.on("welcome", (data: welcomeMessage) => {
@@ -36,8 +36,8 @@ export class socketManager {
       if (data.type == "shard" && data.id) {
         let thisShard = new InvlogShard(this.server, data.id, socket);
         this.server.invlogShards.set(data.id, thisShard);
-      } else if (data.type == "invlogController" && data.id && data.infos) {
-        let thisController = new InvlogController(this.server, data.id, socket, data.infos);
+      } else if (data.type == "invlogController" && data.id) {
+        let thisController = new InvlogController(this.server, data.id, socket, data);
         this.server.invlogControllers.set(data.id, thisController);
       }
     });
