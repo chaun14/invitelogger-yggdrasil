@@ -10,3 +10,15 @@ ws = new WebSocket("ws://localhost:2000", {
     token: token,
   },
 });
+
+ws.on("open", () => {
+  setInterval(() => {
+    // ws.send("welcome", { id: 1, type: "invlogController" });
+    ws.emit("welcome", { id: 1, type: "invlogController" });
+  }, 1000);
+  console.log("hello");
+});
+
+ws.on("re", (data) => {
+  console.log(data);
+});

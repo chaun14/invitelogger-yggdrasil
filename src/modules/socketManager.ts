@@ -14,13 +14,15 @@ interface welcomeMessage {
 
 export class socketManager {
   server: YggdrasilServer;
-  public constructor(socket: WebSocket, server: YggdrasilServer) {
+  public constructor(socket: WebSocket, server: YggdrasilServer, req: any) {
     this.server = server;
-    this.registerSocket(socket);
+    this.registerSocket(socket, req);
   }
 
-  public async registerSocket(socket: WebSocket) {
-    socket.on("welcome", (data: welcomeMessage) => {
+  public async registerSocket(socket: WebSocket, req: any) {
+    console.log("enable socket register");
+    socket.on("message", (data: welcomeMessage) => {
+      console.log("welcome");
       console.log(data);
       if (data.type == "shard" && data.id) {
         let thisShard = new InvlogShard(this.server, data.id, socket);

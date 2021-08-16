@@ -10,6 +10,7 @@ export class InvlogController {
   id: number;
 
   public constructor(server: YggdrasilServer, id: number, socket: WebSocket, infos: controllerInfoData) {
+    console.log("controller " + id + " registered");
     this.server = server;
     this.socket = socket;
     this.id = id;

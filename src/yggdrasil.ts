@@ -26,7 +26,17 @@ server.on("listening", () => {
   console.log("socket ready on port " + server.options.port);
 });
 
-server.on("connection", (socket) => {
+server.on("connection", (socket, req) => {
   console.log("socket connected");
-  new socketManager(socket, server);
+
+  socket.emit("re", "cc");
+  socket.on("welcome", (data) => {
+    console.log("welcomed");
+  });
+
+  new socketManager(socket, server, req);
+});
+
+server.on("message", (data: any) => {
+  console.log(data);
 });
