@@ -1,24 +1,21 @@
-const WebSocket = require("ws");
 const jwt = require("jsonwebtoken");
 const config = require("./config.json");
 
 var token = jwt.sign({ name: "iostreamer" }, config.key, {});
-console.log(token);
 
-ws = new WebSocket("ws://localhost:2000", {
-  headers: {
-    token: token,
-  },
+const socket = require("socket.io-client")("http://localhost:2000");
+
+socket.on("connect", () => {
+  console.log("connected to smth");
+  socket.emit("authenticate", { token });
 });
 
-ws.on("open", () => {
-  setInterval(() => {
-    // ws.send("welcome", { id: 1, type: "invlogController" });
-    ws.emit("welcome", { id: 1, type: "invlogController" });
-  }, 1000);
-  console.log("hello");
+socket.on("welcome", () => {
+  console.log("we are authenticated");
+
+  socket.send("welcome", { id: 1, type: "invlogController" });
 });
 
-ws.on("re", (data) => {
-  console.log(data);
+socket.on("error", (err) => {
+  console.log(err);
 });

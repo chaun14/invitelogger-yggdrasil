@@ -1,8 +1,9 @@
-import WebSocket from "ws";
+import { Socket } from "socket.io";
 import { InvlogController } from "../components/invlogController";
 import { InvlogShard } from "../components/invlogShard";
 import { controllerInfoData } from "../types";
 import { YggdrasilServer } from "../yggdrasil";
+import { Authenticator } from "./auth";
 
 interface welcomeMessage {
   type: string;
@@ -14,14 +15,22 @@ interface welcomeMessage {
 
 export class socketManager {
   server: YggdrasilServer;
-  public constructor(socket: WebSocket, server: YggdrasilServer, req: any) {
+  authenticator: Authenticator;
+
+  public constructor(socket: Socket, server: YggdrasilServer, auth: Authenticator) {
     this.server = server;
-    this.registerSocket(socket, req);
+    this.authenticator = auth;
+
+    this.registerSocket(socket);
   }
 
-  public async registerSocket(socket: WebSocket, req: any) {
+  public async registerSocket(socket: Socket) {
+    // firstly we need to authenticate it
+    let auth = await this.authenticator.verifyAuth(socket);
+    if (auth) return;
     console.log("enable socket register");
-    socket.on("message", (data: welcomeMessage) => {
+
+    socket.on("welcome", (data: welcomeMessage) => {
       console.log("welcome");
       console.log(data);
       if (data.type == "shard" && data.id) {

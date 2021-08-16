@@ -1,5 +1,8 @@
 import jwt, { verify, VerifyCallback } from "jsonwebtoken";
+import { Socket } from "socket.io";
 import { VerifyClientCallbackAsync, VerifyClientCallbackSync } from "ws";
+
+// inspired from https://facundoolano.wordpress.com/2014/10/11/better-authentication-for-socket-io-no-query-strings/
 
 export class Authenticator {
   public key: string;
@@ -8,23 +11,42 @@ export class Authenticator {
     this.key = apiKey;
   }
 
-  public verifyAuth(info: any, cb: any) {
-    var token = info.req.headers.token;
-    if (!token) {
-      cb(false, 401, "Unauthorized");
-      console.log("no token provided");
-    } else {
-      console.log(this.key + " ||||" + token);
-      jwt.verify(token, this.key, (err: any, decoded: any) => {
-        if (err) {
-          cb(false, 401, "Unauthorized");
-          console.log("wrong token provided");
-        } else {
-          info.req.user = decoded; //[1]
-          cb(true);
-          console.log("auth ok");
+  public verifyAuth(socket: Socket): Promise<boolean> {
+    return new Promise(async (resolve, reject) => {
+      console.log(socket.id + " authenticating");
+
+      socket.auth = false;
+
+      socket.on("authenticate", (data) => {
+        //check the auth data sent by the client
+        if (data.token) {
+          jwt.verify(data.token, this.key, (err: any, decoded: any) => {
+            if (err) {
+              // wrong token provided
+              console.log(socket.id + " failed login");
+            } else {
+              console.log(socket.id + " login ok");
+
+              // set it to ok
+              socket.auth = true;
+
+              // tell our socket that it is welcome in our systems, otherwise it would be very sad
+              socket.emit("welcome");
+
+              resolve(true);
+            }
+          });
         }
       });
-    }
+
+      setTimeout(function () {
+        //If the socket didn't authenticate at the deadline, disconnect it
+        if (!socket.auth) {
+          console.log("Disconnecting socket ", socket.id);
+          socket.disconnect(true);
+          reject("unauthorised");
+        }
+      }, 1000);
+    });
   }
 }
