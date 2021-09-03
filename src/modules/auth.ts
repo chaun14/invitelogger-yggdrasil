@@ -3,7 +3,7 @@ import { Socket } from "socket.io";
 import { VerifyClientCallbackAsync, VerifyClientCallbackSync } from "ws";
 
 // inspired from https://facundoolano.wordpress.com/2014/10/11/better-authentication-for-socket-io-no-query-strings/
-
+// and http://iostreamer.me/ws/node.js/jwt/2016/05/08/websockets_authentication.html
 export class Authenticator {
   public key: string;
 

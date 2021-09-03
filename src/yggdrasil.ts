@@ -34,6 +34,23 @@ export class YggdrasilServer extends Server {
     });
 
     this.options = yggConfig;
+
+    process.stdin.resume();
+    process.stdin.setEncoding("utf8");
+
+    process.stdin.on("data", (text) => {
+      // @ts-ignore
+      let server: YggdrasilServer = this;
+      let content = text.toString().trim();
+
+      try {
+        let evaled = eval(content);
+        console.log(evaled);
+      } catch (err) {
+        console.error("Eval error:" + err);
+      }
+    });
+
     console.log("started");
   }
 }
@@ -42,13 +59,13 @@ const webApp = express();
 const webServer = http.createServer(webApp);
 
 const auth = new Authenticator(yggConfig.key);
-export const Yggdrasil = new YggdrasilServer(webServer);
+export const server = new YggdrasilServer(webServer);
 
-Yggdrasil.on("connection", (socket) => {
+server.on("connection", (socket) => {
   console.log("connected");
-  new socketManager(socket, Yggdrasil, auth);
+  new socketManager(socket, server, auth);
 });
 
-Yggdrasil.on("message", (data: any) => {
+server.on("message", (data: any) => {
   console.log(data);
 });

@@ -7,6 +7,8 @@ export interface controllerInfoData {
   proc: string;
   cpuLoad: Array<number>;
   os: string;
+  runningShards: Array<number>;
+  advisedShardCount: number;
 }
 
 declare module "socket.io" {

@@ -8,7 +8,7 @@ import { Authenticator } from "./auth";
 interface welcomeMessage {
   type: string;
   key: string;
-  id?: number;
+  id: number;
   controllerId?: number;
   infos?: controllerInfoData;
 }
@@ -28,15 +28,17 @@ export class socketManager {
     // firstly we need to authenticate it
     let auth = await this.authenticator.verifyAuth(socket).catch(() => {});
     if (!auth) return;
-    console.log("enable socket register");
 
+    // once the client has acknoledged the authentication
+    // register it into our system
     socket.on("welcome", (data: welcomeMessage) => {
-      console.log("welcome");
+      console.log(socket.id + " welcome");
       console.log(data);
-      if (data.type == "shard" && data.id) {
+
+      if (data.type == "shard" && data) {
         let thisShard = new InvlogShard(this.server, data.id, socket);
         this.server.invlogShards.set(data.id, thisShard);
-      } else if (data.type == "invlogController" && data.id) {
+      } else if (data.type == "invlogController" && data) {
         let thisController = new InvlogController(this.server, data.id, socket, data);
         this.server.invlogControllers.set(data.id, thisController);
       }
