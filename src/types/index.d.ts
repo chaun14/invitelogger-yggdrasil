@@ -8,6 +8,7 @@ export interface controllerInfoData {
   cpuLoad: Array<number>;
   os: string;
   runningShards: Array<number>;
+  shards: Array<number>;
   advisedShardCount: number;
 }
 

@@ -7,6 +7,7 @@ export class InvlogController {
   socket: Socket;
   totalShard: number;
   advisedShardCount: number;
+  shards: Array<number>;
 
   infos: controllerInfoData | undefined;
   id: number;
@@ -18,6 +19,7 @@ export class InvlogController {
     this.id = id;
     this.infos = data.infos;
     this.totalShard = server.config.shards.inviteLogger;
+    this.shards = data.infos?.shards ? data.infos?.shards : [];
     this.advisedShardCount = data.infos ? data.infos.advisedShardCount : 0;
   }
 }

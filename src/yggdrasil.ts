@@ -8,6 +8,7 @@ import express from "express";
 import http from "http";
 import { Server } from "socket.io";
 import colors from "colors";
+import { shardDispatcher } from "./modules/shardDispatcher";
 
 export class YggdrasilServer extends Server {
   public config = yggConfig;
@@ -15,6 +16,7 @@ export class YggdrasilServer extends Server {
   public invlogControllers: Map<number, InvlogController>;
   public webServer: http.Server;
   public options: typeof yggConfig;
+  public shardDispatcher: shardDispatcher;
 
   public constructor(httpServer: http.Server) {
     super(httpServer, {});
@@ -34,6 +36,8 @@ export class YggdrasilServer extends Server {
     });
 
     this.options = yggConfig;
+
+    this.shardDispatcher = new shardDispatcher(this);
 
     process.stdin.resume();
     process.stdin.setEncoding("utf8");
